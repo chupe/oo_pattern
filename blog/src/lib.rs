@@ -15,10 +15,6 @@ impl Post {
         }
     }
 
-    pub fn add_text(&mut self, text: &str) {
-        self.content.push_str(text);
-    }
-
     pub fn content(&self) -> &str {
         &self.content
     }
@@ -41,7 +37,25 @@ pub struct PendingReviewRequest {
 }
 
 impl PendingReviewRequest {
-    pub fn approve(self) -> Post {
+    pub fn approve(self) -> AwaitingConfirmation {
+        AwaitingConfirmation {
+            content: self.content,
+        }
+    }
+
+    pub fn reject(self) -> DraftPost {
+        DraftPost {
+            content: self.content
+        }
+    }
+}
+
+pub struct AwaitingConfirmation {
+    content: String,
+}
+
+impl AwaitingConfirmation {
+    pub fn final_approve (self) -> Post {
         Post {
             content: self.content,
         }
